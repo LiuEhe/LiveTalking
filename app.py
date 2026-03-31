@@ -1,21 +1,3 @@
-###############################################################################
-#  Copyright (C) 2024 LiveTalking@lipku https://github.com/lipku/LiveTalking
-#  email: lipku@foxmail.com
-# 
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#  
-#       http://www.apache.org/licenses/LICENSE-2.0
-# 
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-###############################################################################
-
-# server.py
 from flask import Flask, render_template,send_from_directory,request, jsonify
 from flask_sockets import Sockets
 import base64
@@ -67,18 +49,8 @@ def randN(N)->int:
 
 def build_nerfreal(sessionid:int)->BaseReal:
     opt.sessionid=sessionid
-    if opt.model == 'wav2lip':
-        from lipreal import LipReal
-        nerfreal = LipReal(opt,model,avatar)
-    elif opt.model == 'musetalk':
-        from musereal import MuseReal
-        nerfreal = MuseReal(opt,model,avatar)
-    # elif opt.model == 'ernerf':
-    #     from nerfreal import NeRFReal
-    #     nerfreal = NeRFReal(opt,model,avatar)
-    elif opt.model == 'ultralight':
-        from lightreal import LightReal
-        nerfreal = LightReal(opt,model,avatar)
+    from lipreal import LipReal
+    nerfreal = LipReal(opt,model,avatar)
     return nerfreal
 
 #@app.route('/offer', methods=['POST'])
@@ -328,7 +300,7 @@ if __name__ == '__main__':
     parser.add_argument('--H', type=int, default=450, help="GUI height")
 
     #musetalk opt
-    parser.add_argument('--avatar_id', type=str, default='avator_1', help="define which avatar in data/avatars")
+    parser.add_argument('--avatar_id', type=str, default='wav2lip256_avatar1', help="define which avatar in data/avatars")
     #parser.add_argument('--bbox_shift', type=int, default=5)
     parser.add_argument('--batch_size', type=int, default=16, help="infer batch")
 
@@ -341,7 +313,7 @@ if __name__ == '__main__':
     # parser.add_argument('--CHARACTER', type=str, default='test')
     # parser.add_argument('--EMOTION', type=str, default='default')
 
-    parser.add_argument('--model', type=str, default='musetalk') #musetalk wav2lip ultralight
+    parser.add_argument('--model', type=str, default='wav2lip') #wav2lip
 
     parser.add_argument('--transport', type=str, default='rtcpush') #webrtc rtcpush virtualcam
     parser.add_argument('--push_url', type=str, default='http://localhost:1985/rtc/v1/whip/?app=live&stream=livestream') #rtmp://localhost/live/livestream
@@ -357,28 +329,11 @@ if __name__ == '__main__':
         with open(opt.customvideo_config,'r') as file:
             opt.customopt = json.load(file)
 
-    # if opt.model == 'ernerf':       
-    #     from nerfreal import NeRFReal,load_model,load_avatar
-    #     model = load_model(opt)
-    #     avatar = load_avatar(opt) 
-    if opt.model == 'musetalk':
-        from musereal import MuseReal,load_model,load_avatar,warm_up
-        logger.info(opt)
-        model = load_model()
-        avatar = load_avatar(opt.avatar_id) 
-        warm_up(opt.batch_size,model)      
-    elif opt.model == 'wav2lip':
-        from lipreal import LipReal,load_model,load_avatar,warm_up
-        logger.info(opt)
-        model = load_model("./models/wav2lip.pth")
-        avatar = load_avatar(opt.avatar_id)
-        warm_up(opt.batch_size,model,256)
-    elif opt.model == 'ultralight':
-        from lightreal import LightReal,load_model,load_avatar,warm_up
-        logger.info(opt)
-        model = load_model(opt)
-        avatar = load_avatar(opt.avatar_id)
-        warm_up(opt.batch_size,avatar,160)
+    from lipreal import LipReal,load_model,load_avatar,warm_up
+    logger.info(opt)
+    model = load_model("./models/wav2lip.pth")
+    avatar = load_avatar(opt.avatar_id)
+    warm_up(opt.batch_size,model,256)
 
     # if opt.transport=='rtmp':
     #     thread_quit = Event()
