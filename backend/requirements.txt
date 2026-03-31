@@ -26,8 +26,12 @@ lpips==0.1.3
 imageio-ffmpeg
 
 edge_tts
-flask
-flask_sockets
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+PyJWT
+python-multipart
 opencv-python-headless
 aiortc
 aiohttp_cors
