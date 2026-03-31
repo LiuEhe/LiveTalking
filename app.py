@@ -315,7 +315,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--model', type=str, default='wav2lip') #wav2lip
 
-    parser.add_argument('--transport', type=str, default='rtcpush') #webrtc rtcpush virtualcam
+    parser.add_argument('--transport', type=str, default='webrtc') #webrtc rtcpush virtualcam
     parser.add_argument('--push_url', type=str, default='http://localhost:1985/rtc/v1/whip/?app=live&stream=livestream') #rtmp://localhost/live/livestream
 
     parser.add_argument('--max_session', type=int, default=1)  #multi session count
