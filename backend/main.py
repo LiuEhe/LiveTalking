@@ -6,11 +6,24 @@ from contextlib import asynccontextmanager
 
 import json
 from types import SimpleNamespace
+from logger import logger
 
-# Load config directly from config.json
-with open("config.json", "r", encoding="utf-8") as f:
-    config_dict = json.load(f)
-    settings = SimpleNamespace(**config_dict)
+import json
+from types import SimpleNamespace
+from logger import logger
+
+try:
+    with open("config.json", "r", encoding="utf-8") as f:
+        config_data = json.load(f)
+        settings = SimpleNamespace(**config_data.get("livetalking", {}))
+        
+        # Merge ollama config
+        ollama_cfg = config_data.get("ollama", {})
+        settings.llm_url = ollama_cfg.get("url", "http://127.0.0.1:11434/v1")
+        settings.llm_model = ollama_cfg.get("model", "qwen3.5:0.8b")
+except Exception as e:
+    logger.error(f"Failed to load config.json: {e}")
+    settings = SimpleNamespace()
 
 if settings.customvideo_config:
     try:
@@ -19,8 +32,7 @@ if settings.customvideo_config:
     except Exception as e:
         logger.error(f"Failed to load customvideo_config: {e}")
 
-from logger import logger
-from api import webrtc_api, human_api, record_api
+from api import webrtc_api, human_api, record_api, ai_api
 from servers.webrtc_server import close_all_connections
 import servers.state as state
 
@@ -58,6 +70,7 @@ app.add_middleware(
 app.include_router(webrtc_api.router, tags=["WebRTC"])
 app.include_router(human_api.router, tags=["Human Control"])
 app.include_router(record_api.router, tags=["Record Control"])
+app.include_router(ai_api.router, tags=["AI"])
 
 # Mount static files
 app.mount("/", StaticFiles(directory="web", html=True), name="web")

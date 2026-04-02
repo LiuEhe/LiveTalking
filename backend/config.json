@@ -1,22 +1,28 @@
 {
-    "fps": 50,
-    "l": 10,
-    "m": 8,
-    "r": 10,
-    "W": 450,
-    "H": 450,
-    "avatar_id": "wav2lip256_avatar1",
-    "batch_size": 16,
-    "customvideo_config": "",
-    "tts": "edgetts",
-    "REF_FILE": "zh-CN-YunxiaNeural",
-    "REF_TEXT": "",
-    "TTS_SERVER": "http://127.0.0.1:9880",
-    "model": "wav2lip",
-    "transport": "webrtc",
-    "push_url": "http://localhost:1985/rtc/v1/whip/?app=live&stream=livestream",
-    "max_session": 1,
-    "listenport": 8010,
-    "sessionid": 0,
-    "customopt": []
+    "livetalking": {
+        "fps": 50,
+        "l": 10,
+        "m": 8,
+        "r": 10,
+        "W": 450,
+        "H": 450,
+        "avatar_id": "wav2lip256_avatar1",
+        "batch_size": 16,
+        "customvideo_config": "",
+        "tts": "edgetts",
+        "REF_FILE": "zh-CN-YunxiaNeural",
+        "REF_TEXT": "",
+        "TTS_SERVER": "http://127.0.0.1:9880",
+        "model": "wav2lip",
+        "transport": "webrtc",
+        "push_url": "http://localhost:1985/rtc/v1/whip/?app=live&stream=livestream",
+        "max_session": 1,
+        "listenport": 8010,
+        "customopt": []
+    },
+    "ollama": {
+        "model": "qwen3.5:0.8b",
+        "url": "http://127.0.0.1:11434/v1",
+        "apiKey": "ollama"
+    }
 }

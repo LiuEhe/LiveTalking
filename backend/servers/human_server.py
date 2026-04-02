@@ -1,6 +1,6 @@
 import asyncio
 from logger import logger
-from llm import llm_response
+from servers.ai_server import llm_chat_stream
 from servers import state
 
 async def process_human_interaction(sessionid: int, interaction_type: str, text: str = None, interrupt: bool = False):
@@ -13,7 +13,7 @@ async def process_human_interaction(sessionid: int, interaction_type: str, text:
     if interaction_type == 'echo':
         state.nerfreals[sessionid].put_msg_txt(text)
     elif interaction_type == 'chat':
-        asyncio.get_event_loop().run_in_executor(None, llm_response, text, state.nerfreals[sessionid])
+        asyncio.get_event_loop().run_in_executor(None, llm_chat_stream, text, state.nerfreals[sessionid])
         
     return {"code": 0, "msg": "ok"}
 
