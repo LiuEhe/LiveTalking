@@ -28,8 +28,26 @@
 4.  **Utils 层 (`backend/utils/`)**:
     *   存放通用的工具类，如日志系统 (`logger.py`)。
 
+## 前端架构
+前端基于 **Vue 3 (Composition API) + TypeScript + Vite**，并使用最新的 **Tailwind CSS v4** 进行样式构建，核心目录结构如下：
+
+1.  **Views 层 (`frontend/src/views/`)**:
+    *   负责页面视图组件的展示。
+2.  **Router 层 (`frontend/src/router/`)**:
+    *   使用 `vue-router` 管控页面的路由与跳转。
+3.  **Utils & Types 层 (`frontend/src/utils/` & `frontend/src/types/`)**:
+    *   `utils` 存放通用的逻辑与请求工具。
+    *   `types` 统一管理 TypeScript 类型声明。
+
 ## 目录结构
 ```text
+frontend/                # Vue 3 前端应用
+├── src/                 # 前端源码
+│   ├── views/           # 页面级视图组件
+│   ├── router/          # 路由管控
+│   ├── utils/           # 通用 TS 工具函数
+│   ├── types/           # TypeScript 类型定义
+│   └── main.ts          # 挂载路由及应用的入口
 backend/
 ├── main.py              # FastAPI 应用入口，负责启动与配置加载
 ├── config.json          # 唯一配置文件，禁止在代码中硬编码配置项
