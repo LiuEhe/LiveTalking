@@ -9,6 +9,7 @@ export default defineConfig({
   ],
   server: {
     host: '127.0.0.1', // 解决由于 localhost 造成的无法访问问题
-    open: true         // 启动后自动打开浏览器
+    open: true,         // 启动后自动打开浏览器
+    port: 3000,         // 指定端口
   }
 })
