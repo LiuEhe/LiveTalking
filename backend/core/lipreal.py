@@ -33,16 +33,16 @@ from threading import Thread, Event
 import torch.multiprocessing as mp
 
 
-from lipasr import LipASR
+from core.lipasr import LipASR
 import asyncio
 from av import AudioFrame, VideoFrame
 from wav2lip.models import Wav2Lip
-from basereal import BaseReal
+from core.basereal import BaseReal
 
 #from imgcache import ImgCache
 
 from tqdm import tqdm
-from logger import logger
+from utils.logger import logger
 
 device = "cuda" if torch.cuda.is_available() else ("mps" if (hasattr(torch.backends, "mps") and torch.backends.mps.is_available()) else "cpu")
 print('Using {} for inference.'.format(device))

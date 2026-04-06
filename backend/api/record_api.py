@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from logger import logger
+from utils.logger import logger
 from servers.record_server import handle_record_action
 
 router = APIRouter()

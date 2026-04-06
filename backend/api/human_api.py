@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import Optional
-from logger import logger
+from utils.logger import logger
 from servers.human_server import (
     process_human_interaction,
     process_human_audio,

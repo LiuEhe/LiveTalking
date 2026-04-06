@@ -42,7 +42,7 @@ from aiortc import (
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-from logger import logger as mylogger
+from utils.logger import logger as mylogger
 
 
 class PlayerStreamTrack(MediaStreamTrack):

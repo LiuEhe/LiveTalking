@@ -6,11 +6,7 @@ from contextlib import asynccontextmanager
 
 import json
 from types import SimpleNamespace
-from logger import logger
-
-import json
-from types import SimpleNamespace
-from logger import logger
+from utils.logger import logger
 
 try:
     with open("config.json", "r", encoding="utf-8") as f:
@@ -40,7 +36,7 @@ import servers.state as state
 async def lifespan(app: FastAPI):
     # Startup logic
     logger.info("Initializing LiveTalking Backend (FastAPI)")
-    from lipreal import load_model, load_avatar, warm_up
+    from core.lipreal import load_model, load_avatar, warm_up
     
     # Push opt to state for build_nerfreal
     state.opt = settings

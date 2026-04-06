@@ -22,7 +22,7 @@ import queue
 from queue import Queue
 import torch.multiprocessing as mp
 
-from basereal import BaseReal
+from core.basereal import BaseReal
 
 
 class BaseASR:

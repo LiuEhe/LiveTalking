@@ -23,7 +23,7 @@ import queue
 from queue import Queue
 #import multiprocessing as mp
 
-from baseasr import BaseASR
+from core.baseasr import BaseASR
 from wav2lip import audio
 
 class LipASR(BaseASR):

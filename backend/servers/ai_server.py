@@ -1,6 +1,6 @@
 import time
-from basereal import BaseReal
-from logger import logger
+from core.basereal import BaseReal
+from utils.logger import logger
 from servers import state
 
 def llm_chat_stream(message: str, nerfreal: BaseReal):

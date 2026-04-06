@@ -38,8 +38,8 @@ from av import AudioFrame, VideoFrame
 import av
 from fractions import Fraction
 
-from ttsreal import EdgeTTS,SovitsTTS,XTTS,CosyVoiceTTS,FishTTS,TencentTTS,DoubaoTTS,IndexTTS2,AzureTTS
-from logger import logger
+from core.ttsreal import EdgeTTS,SovitsTTS,XTTS,CosyVoiceTTS,FishTTS,TencentTTS,DoubaoTTS,IndexTTS2,AzureTTS
+from utils.logger import logger
 
 from tqdm import tqdm
 def read_imgs(img_list):

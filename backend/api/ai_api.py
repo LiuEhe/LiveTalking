@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import asyncio
 from servers.ai_server import llm_chat_stream
 from servers import state
-from logger import logger
+from utils.logger import logger
 
 router = APIRouter()
 

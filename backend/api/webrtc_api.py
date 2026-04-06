@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from logger import logger
+from utils.logger import logger
 from servers.webrtc_server import process_offer
 
 router = APIRouter()
