@@ -37,8 +37,8 @@ import av
 from fractions import Fraction
 from core.ttsreal import EdgeTTS,SovitsTTS,XTTS,CosyVoiceTTS,FishTTS,TencentTTS,DoubaoTTS,IndexTTS2,AzureTTS
 from utils.logger import logger
-import pyaudio
-import pyvirtualcam
+# import pyaudio
+# import pyvirtualcam
 
 
 from tqdm import tqdm
