@@ -31,15 +31,15 @@ from queue import Queue
 from threading import Thread, Event
 from io import BytesIO
 import soundfile as sf
-
 import asyncio
 from av import AudioFrame, VideoFrame
-
 import av
 from fractions import Fraction
-
 from core.ttsreal import EdgeTTS,SovitsTTS,XTTS,CosyVoiceTTS,FishTTS,TencentTTS,DoubaoTTS,IndexTTS2,AzureTTS
 from utils.logger import logger
+import pyaudio
+import pyvirtualcam
+
 
 from tqdm import tqdm
 def read_imgs(img_list):
@@ -51,7 +51,9 @@ def read_imgs(img_list):
     return frames
 
 def play_audio(quit_event,queue):        
-    import pyaudio
+    if pyaudio is None:
+        logger.error("pyaudio not installed")
+        return
     p = pyaudio.PyAudio()
     stream = p.open(
         rate=16000,
@@ -308,7 +310,9 @@ class BaseReal:
             _last_speaking_frame = None  # 说话帧缓存
         
         if self.opt.transport=='virtualcam':
-            import pyvirtualcam
+            if pyvirtualcam is None:
+                logger.error("pyvirtualcam not installed")
+                return
             vircam = None
 
             audio_tmp = queue.Queue(maxsize=3000)

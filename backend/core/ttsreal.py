@@ -47,6 +47,9 @@ if TYPE_CHECKING:
     from core.basereal import BaseReal
 
 from utils.logger import logger
+
+from gradio_client import Client, handle_file
+
 class State(Enum):
     RUNNING=0
     PAUSE=1
@@ -670,7 +673,8 @@ class IndexTTS2(BaseTTS):
         
         # 初始化Gradio客户端
         try:
-            from gradio_client import Client, handle_file
+            if Client is None or handle_file is None:
+                raise ImportError("gradio_client not installed")
             self.client = Client(self.server_url)
             self.handle_file = handle_file
             logger.info(f"IndexTTS2 Gradio客户端初始化成功: {self.server_url}")

@@ -2,10 +2,10 @@ import time
 from core.basereal import BaseReal
 from utils.logger import logger
 from servers import state
+from openai import OpenAI
 
 def llm_chat_stream(message: str, nerfreal: BaseReal):
     start = time.perf_counter()
-    from openai import OpenAI
     
     # Use settings from state.opt to configure ollama
     llm_url = getattr(state.opt, "llm_url", "http://127.0.0.1:11434/v1")

@@ -18,11 +18,15 @@
         "push_url": "http://localhost:1985/rtc/v1/whip/?app=live&stream=livestream",
         "max_session": 1,
         "listenport": 8010,
+        "listen_host": "0.0.0.0",
+        "model_path": "./models/wav2lip.pth",
+        "static_dir": "web",
+        "warmup_res": 256,
         "customopt": []
     },
     "ollama": {
         "model": "qwen3.5:0.8b",
         "url": "http://127.0.0.1:11434/v1",
-        "apiKey": "ollama"
+        "apiKey": "sk-xxxxx"
     }
 }

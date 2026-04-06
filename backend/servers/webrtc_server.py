@@ -5,6 +5,7 @@ from aiortc import RTCPeerConnection, RTCSessionDescription, RTCIceServer, RTCCo
 from aiortc.rtcrtpsender import RTCRtpSender
 from core.webrtc import HumanPlayer
 from utils.logger import logger
+from core.lipreal import LipReal
 from servers import state
 
 def randN(N) -> int:
@@ -14,7 +15,6 @@ def randN(N) -> int:
 
 def build_nerfreal(sessionid: int):
     state.opt.sessionid = sessionid
-    from core.lipreal import LipReal
     nerfreal = LipReal(state.opt, state.model, state.avatar)
     return nerfreal
 

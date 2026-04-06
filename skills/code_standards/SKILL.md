@@ -20,3 +20,6 @@ The backend codebase must strictly follow a three-layer architecture to ensure d
 ## 3. Mandatory Code Review (严格代码 Review)
 - **Quality Assurance**: After completing any code modifications or feature additions, you must perform a self-review of the changes.
 - **Correctness**: Ensure that the code functions flawlessly without typos, properly handles errors, and correctly implements the required features. The code must meet a correctness rate of strictly > 0.9 before it is considered done.
+
+## 4. Standardized Imports (规范导入)
+- **Imports at Top**: ALL `import` and `from ... import ...` statements MUST be placed at the top of the file. Do not import libraries in the middle of code or inside functions.
