@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
+import types
 from utils.logger import logger
 from servers.human_server import (
     process_human_interaction,
@@ -35,6 +37,8 @@ async def human_endpoint(req: HumanRequest):
             text=req.text,
             interrupt=req.interrupt
         )
+        if isinstance(res, types.AsyncGeneratorType):
+            return StreamingResponse(res, media_type="text/plain")
         return res
     except Exception as e:
         logger.exception("exception in /human:")

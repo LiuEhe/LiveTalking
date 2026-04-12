@@ -12,10 +12,21 @@ async def process_human_interaction(sessionid: int, interaction_type: str, text:
 
     if interaction_type == 'echo':
         state.nerfreals[sessionid].put_msg_txt(text)
+        return {"code": 0, "msg": "ok"}
     elif interaction_type == 'chat':
-        asyncio.get_event_loop().run_in_executor(None, llm_chat_stream, text, state.nerfreals[sessionid])
+        loop = asyncio.get_event_loop()
+        output_queue = asyncio.Queue()
+        # fire off LLM logic in executor
+        loop.run_in_executor(None, llm_chat_stream, text, state.nerfreals[sessionid], loop, output_queue)
         
-    return {"code": 0, "msg": "ok"}
+        async def event_stream():
+            while True:
+                msg = await output_queue.get()
+                if msg is None: # End of stream
+                    break
+                yield msg
+                
+        return event_stream()
 
 async def process_human_audio(sessionid: int, filebytes: bytes):
     if sessionid not in state.nerfreals:

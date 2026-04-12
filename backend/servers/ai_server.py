@@ -4,7 +4,9 @@ from utils.logger import logger
 from servers import state
 from openai import OpenAI
 
-def llm_chat_stream(message: str, nerfreal: BaseReal):
+import asyncio
+
+def llm_chat_stream(message: str, nerfreal, loop=None, output_queue=None):
     start = time.perf_counter()
     
     # Use settings from state.opt to configure ollama
@@ -36,22 +38,33 @@ def llm_chat_stream(message: str, nerfreal: BaseReal):
                     first = False
                     
                 msg = chunk.choices[0].delta.content
+                
+                # Push the raw token to the queue for the frontend
+                if loop and output_queue:
+                    asyncio.run_coroutine_threadsafe(output_queue.put(msg), loop)
+                    
                 lastpos = 0
                 for i, char in enumerate(msg):
                     if char in ",.!;:，。！？：；\n":
                         result = result + msg[lastpos:i+1]
                         lastpos = i + 1
                         if len(result) > 10:
-                            logger.info(result)
-                            nerfreal.put_msg_txt(result)
+                            logger.info(f"LLM Chunk: {result}")
+                            if nerfreal:
+                                nerfreal.put_msg_txt(result)
                             result = ""
                 result = result + msg[lastpos:]
                 
         end = time.perf_counter()
         logger.info(f"llm Time to last chunk: {end-start}s")
         if result.strip():
-            logger.info(result)
-            nerfreal.put_msg_txt(result)
-            
+            logger.info(f"LLM Chunk: {result}")
+            if nerfreal:
+                nerfreal.put_msg_txt(result)
+                
     except Exception as e:
         logger.error(f"Error calling LLM stream: {e}")
+    finally:
+        # Signal completion
+        if loop and output_queue:
+            asyncio.run_coroutine_threadsafe(output_queue.put(None), loop)
