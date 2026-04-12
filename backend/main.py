@@ -81,7 +81,7 @@ app.include_router(record_api.router, tags=["Record Control"])
 app.include_router(ai_api.router, tags=["AI"])
 
 # Mount static files
-app.mount("/", StaticFiles(directory=settings.static_dir, html=True), name="web")
+# app.mount("/", StaticFiles(directory=settings.static_dir, html=True), name="web")
 
 if __name__ == "__main__":
     logger.info(f"Start HTTP server: http://{settings.listen_host}:{settings.listenport}/webrtcapi.html")
