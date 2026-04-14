@@ -12,7 +12,7 @@ export default defineConfig({
     open: true,         // 启动后自动打开浏览器
     port: 3000,         // 指定端口
     proxy: {
-      '^/(offer|human|record)': {
+      '/api': {
         target: 'http://127.0.0.1:8010',
         changeOrigin: true
       }

@@ -7,10 +7,9 @@ import json
 import os
 from types import SimpleNamespace
 
-from core.lipreal import load_model, load_avatar, warm_up
-from api import webrtc_api, human_api, record_api, ai_api
-from servers.webrtc_server import close_all_connections
-import servers.state as state
+from core import load_model, load_avatar, warm_up
+from api import v1_router
+from servers import close_all_connections, state
 from utils.logger import logger
 
 # Configuration loading (Strictly following rule: no hardcoded defaults)
@@ -75,10 +74,7 @@ app.add_middleware(
 )
 
 # Include APIs
-app.include_router(webrtc_api.router, tags=["WebRTC"])
-app.include_router(human_api.router, tags=["Human Control"])
-app.include_router(record_api.router, tags=["Record Control"])
-app.include_router(ai_api.router, tags=["AI"])
+app.include_router(v1_router)
 
 # Mount static files
 # app.mount("/", StaticFiles(directory=settings.static_dir, html=True), name="web")

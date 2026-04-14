@@ -38,7 +38,7 @@ const negotiate = async () => {
   if (!localOffer) return
 
   try {
-    const res = await fetch('/offer', {
+    const res = await fetch('/api/v1/offer', {
       body: JSON.stringify({
         sdp: localOffer.sdp,
         type: localOffer.type,
@@ -115,7 +115,7 @@ const sendMessage = async () => {
   inputMessage.value = ''
 
   try {
-    const res = await fetch('/human', {
+    const res = await fetch('/api/v1/human', {
       body: JSON.stringify({
         text: text,
         type: 'chat',
@@ -165,7 +165,7 @@ const toggleRecording = async () => {
   if (isRecording.value) {
     // Stop recording
     try {
-      const res = await fetch('/record', {
+      const res = await fetch('/api/v1/record', {
         body: JSON.stringify({
           type: 'end_record',
           sessionid: sessionId.value,
@@ -180,7 +180,7 @@ const toggleRecording = async () => {
   } else {
     // Start recording
     try {
-      const res = await fetch('/record', {
+      const res = await fetch('/api/v1/record', {
         body: JSON.stringify({
           type: 'start_record',
           sessionid: sessionId.value,
