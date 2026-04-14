@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from utils.logger import logger
 from servers.webrtc_server import process_offer
+from core import Success
 
-router = APIRouter()
+router = APIRouter(route_class=Success)
 
 class OfferRequest(BaseModel):
     sdp: str
@@ -12,9 +12,5 @@ class OfferRequest(BaseModel):
 
 @router.post("/offer")
 async def offer_endpoint(req: OfferRequest):
-    try:
-        response_data = await process_offer(req.sdp, req.type, req.sessionid)
-        return response_data
-    except Exception as e:
-        logger.exception('Exception in offer:')
-        raise HTTPException(status_code=500, detail=str(e))
+    response_data = await process_offer(req.sdp, req.type, req.sessionid)
+    return response_data

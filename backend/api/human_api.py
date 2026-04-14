@@ -3,7 +3,6 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
 import types
-from utils.logger import logger
 from servers.human_server import (
     process_human_interaction,
     process_human_audio,
@@ -11,8 +10,9 @@ from servers.human_server import (
     interrupt_human_talk,
     check_is_speaking
 )
+from core import Success
 
-router = APIRouter()
+router = APIRouter(route_class=Success)
 
 class HumanRequest(BaseModel):
     sessionid: int = 0
@@ -30,53 +30,33 @@ class SessionRequest(BaseModel):
 
 @router.post("/human")
 async def human_endpoint(req: HumanRequest):
-    try:
-        res = await process_human_interaction(
-            sessionid=req.sessionid,
-            interaction_type=req.type,
-            text=req.text,
-            interrupt=req.interrupt
-        )
-        if isinstance(res, types.AsyncGeneratorType):
-            return StreamingResponse(res, media_type="text/plain")
-        return res
-    except Exception as e:
-        logger.exception("exception in /human:")
-        return {"code": -1, "msg": str(e)}
+    res = await process_human_interaction(
+        sessionid=req.sessionid,
+        interaction_type=req.type,
+        text=req.text,
+        interrupt=req.interrupt
+    )
+    if isinstance(res, types.AsyncGeneratorType):
+        return StreamingResponse(res, media_type="text/plain")
+    return res
 
 @router.post("/humanaudio")
 async def human_audio_endpoint(sessionid: int = Form(0), file: UploadFile = File(...)):
-    try:
-        filebytes = await file.read()
-        res = await process_human_audio(sessionid, filebytes)
-        return res
-    except Exception as e:
-        logger.exception("exception in /humanaudio:")
-        return {"code": -1, "msg": str(e)}
+    filebytes = await file.read()
+    res = await process_human_audio(sessionid, filebytes)
+    return res
 
 @router.post("/set_audiotype")
 async def set_audiotype_endpoint(req: AudioTypeRequest):
-    try:
-        res = await set_audio_type(req.sessionid, req.audiotype, req.reinit)
-        return res
-    except Exception as e:
-        logger.exception("exception in /set_audiotype:")
-        return {"code": -1, "msg": str(e)}
+    res = await set_audio_type(req.sessionid, req.audiotype, req.reinit)
+    return res
 
 @router.post("/interrupt_talk")
 async def interrupt_talk_endpoint(req: SessionRequest):
-    try:
-        res = await interrupt_human_talk(req.sessionid)
-        return res
-    except Exception as e:
-        logger.exception("exception in /interrupt_talk:")
-        return {"code": -1, "msg": str(e)}
+    res = await interrupt_human_talk(req.sessionid)
+    return res
 
 @router.post("/is_speaking")
 async def is_speaking_endpoint(req: SessionRequest):
-    try:
-        res = await check_is_speaking(req.sessionid)
-        return res
-    except Exception as e:
-        logger.exception("exception in /is_speaking:")
-        return {"code": -1, "msg": str(e)}
+    res = await check_is_speaking(req.sessionid)
+    return res

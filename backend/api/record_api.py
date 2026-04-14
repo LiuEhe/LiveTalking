@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from utils.logger import logger
 from servers.record_server import handle_record_action
+from core import Success
 
-router = APIRouter()
+router = APIRouter(route_class=Success)
 
 class RecordRequest(BaseModel):
     sessionid: int = 0
@@ -11,9 +11,5 @@ class RecordRequest(BaseModel):
 
 @router.post("/record")
 async def record_endpoint(req: RecordRequest):
-    try:
-        res = await handle_record_action(req.sessionid, req.type)
-        return res
-    except Exception as e:
-        logger.exception("exception in /record:")
-        return {"code": -1, "msg": str(e)}
+    res = await handle_record_action(req.sessionid, req.type)
+    return res
