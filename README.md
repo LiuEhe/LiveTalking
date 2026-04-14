@@ -9,9 +9,9 @@
 项目遵循严格的解耦原则，分为以下层次：
 
 1.  **API 层 (`backend/api/`)**:
-    *   负责定义 FastAPI 路由。
-    *   处理 HTTP/WebSocket 请求。
-    *   执行请求参数验证（使用 Pydantic 模型）。
+    *   负责定义 FastAPI 路由，通过 `v1_router` 统一提供带有版本前缀的接口（如 `/api/v1`）。
+    *   **全局异常捕获**：集成自定义 `Success` APIRoute 机制，自动处理业务异常并返回标准格式 JSON，从而实现 API 函数内部无需手写 `try...except`。
+    *   处理 HTTP/WebSocket 请求及参数验证（使用 Pydantic 模型）。
     *   **不包含**任何业务逻辑，仅作为接口网关。
 
 2.  **Server 层 (`backend/servers/`)**:
@@ -20,7 +20,8 @@
     *   调用 Core 层的功能完成具体任务。
 
 3.  **Core 层 (`backend/core/`)**:
-    *   系统的底层核心逻辑。
+    *   系统的底层核心逻辑，包含配置加载与各层级模块的统一导出管理。
+    *   **工程化基座**：提供全局 `Success` 响应处理器，规范后端返回结构。
     *   包含数字人推理的核心类（如 `LipReal`, `BaseReal`）。
     *   处理 ASR (`BaseASR`, `LipASR`) 和 TTS (`BaseTTS` 及其派生类) 的核心逻辑。
     *   管理 WebRTC 核心组件 (`webrtc.py`)。
@@ -49,12 +50,12 @@ frontend/                # Vue 3 前端应用
 │   ├── types/           # TypeScript 类型定义
 │   └── main.ts          # 挂载路由及应用的入口
 backend/
-├── main.py              # FastAPI 应用入口，负责启动与配置加载
+├── main.py              # FastAPI 应用入口，负责生命周期管理与模块化导入
 ├── config.json          # 唯一配置文件，禁止在代码中硬编码配置项
-├── api/                 # 接口层：webrtc_api, human_api, ai_api, record_api
-├── servers/             # 服务层：webrtc_server, human_server, ai_server
-├── core/                # 核心层：数字人推理逻辑、ASR、TTS、WebRTC 驱动
-├── utils/               # 工具层：logger 等
+├── api/                 # 接口层：实现 /api/v1 路由转发与 Success 全局异常捕获
+├── servers/             # 服务层：处理核心业务逻辑与会话状态管理
+├── core/                # 核心层：包含 AI 推理、音频处理驱动及 Success 处理基类
+├── utils/                # 工具层：日志管理等
 ├── wav2lip/             # 特定模型的代码实现
 ├── data/                # 存放头像数据 (avatars)
 └── models/              # 存放模型权重文件 (.pth)
