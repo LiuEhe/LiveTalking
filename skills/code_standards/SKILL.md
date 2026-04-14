@@ -1,26 +1,26 @@
 ---
-name: Code Standards and Guidelines
-description: Strict coding guidelines for the LiveTalking backend project, covering configuration management, architecture layering, and code review processes.
+name: 代码标准与规范
+description: LiveTalking 后端项目的严格代码规范，涵盖配置管理、架构分层以及代码审查流程。
 ---
 
-# LiveTalking Project Code Standards
+# LiveTalking 项目代码规范
 
-When writing, refactoring, or reviewing code for the LiveTalking backend, you MUST strictly adhere to the following rules:
+在为 LiveTalking 后端编写、重构或审查代码时，您**必须**严格遵守以下规则：
 
-## 1. No Hardcoding (禁止硬编码)
-- **Configuration & Models**: You are strictly prohibited from hardcoding any configuration values, model paths, API URLs, or environment-specific variables directly in the code.
-- **Config Management**: ALL configuration data must be read from the central `config.json` file. Whenever you need a new constant or setting, add it to `config.json` rather than hardcoding it.
+## 1. 禁止硬编码 (No Hardcoding)
+- **配置与模型**：严禁在代码中直接硬编码任何配置值、模型路径、API URL 或特定环境的变量。
+- **配置管理**：所有的配置数据必须从统一的 `config.json` 文件中读取。如果有新的常量或设置，请添加到 `config.json` 中，而不是在代码里写死。
 
-## 2. Three-Layer Architecture (3层代码规范)
-The backend codebase must strictly follow a three-layer architecture to ensure decoupling and maintainability. Every layer directory MUST use an `__init__.py` file to explicitly export its public interfaces (e.g., routers, core functions, server state).
-- **API Layer (`api/`)**: Responsible for defining routes, handling HTTP/WebSocket requests, and performing parameter validation. API routes MUST include a versioning prefix (e.g., `/api/v1`), such as `/api/v1/chat`. All individual API routers must be bundled and exported by `api/__init__.py`. No business logic should reside here.
-- **Server Layer (`servers/`)**: Responsible for processing business logic, managing state, and executing operations (such as communicating with LLMs or media streams).
-- **Core Layer (`core/`)**: Responsible for base system functionality, including loading configurations (from `config.json`), setting up databases, handling dependencies, and security.
+## 2. 三层架构规范 (Three-Layer Architecture)
+后端代码库必须严格遵循三层架构，以确保解耦和可维护性。每个层级目录都**必须**使用 `__init__.py` 文件来显式导出其公共接口（例如：路由、核心函数、服务器状态等）。
+- **API 层 (`api/`)**：负责定义路由、处理 HTTP/WebSocket 请求以及进行参数校验。API 路由**必须**包含版本前缀（例如 `/api/v1`），如 `/api/v1/chat`。所有独立的 API 路由必须在 `api/__init__.py` 中汇总并导出。这里不允许存在任何业务逻辑。
+- **服务层 (`servers/`)**：负责处理业务逻辑、状态管理以及执行具体操作（例如与 LLM 或媒体流通信）。
+- **核心层 (`core/`)**：负责基础系统功能，包含加载配置（从 `config.json`）、配置数据库、处理核心依赖以及安全防护等。
 
-## 3. Mandatory Code Review (严格代码 Review)
-- **Quality Assurance**: After completing any code modifications or feature additions, you must perform a self-review of the changes.
-- **Correctness**: Ensure that the code functions flawlessly without typos, properly handles errors, and correctly implements the required features. The code must meet a correctness rate of strictly > 0.9 before it is considered done.
+## 3. 严格的代码 Review (Mandatory Code Review)
+- **质量保证**：在完成任何代码修改或功能添加后，您必须对变更进行自我审查。
+- **正确性**：确保代码运行无瑕疵，没有拼写错误，能正确处理报错并准确实现了需求。代码正确率必须严格达到 > 0.9 才能视为完成。
 
-## 4. Standardized Imports (规范导入)
-- **Imports at Top**: ALL `import` and `from ... import ...` statements MUST be placed at the top of the file. Do not import libraries in the middle of code or inside functions.
-- **Package-Level Imports**: Cross-layer code MUST import endpoints via the target layer's `__init__.py` instead of digging into specific sub-files. (e.g., use `from core import load_model` instead of `from core.lipreal import load_model`).
+## 4. 规范导入 (Standardized Imports)
+- **置顶导入**：所有的 `import` 和 `from ... import ...` 语句**必须**放置在文件顶部。禁止在代码逻辑中间或函数内部动态导入库。
+- **包层级导入**：跨层调用时，**必须**通过目标层的 `__init__.py` 导入对外接口，而不要深入到其下属特定文件中去。（例如：使用 `from core import load_model`，而不是 `from core.lipreal import load_model`）。
