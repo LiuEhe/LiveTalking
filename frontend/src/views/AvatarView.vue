@@ -175,7 +175,7 @@ const handleGenerate = async () => {
 
               <button 
                 @click="handleGenerate"
-                :disabled="uploadStatus !== 'uploaded' || uploadStatus === 'generating'"
+                :disabled="uploadStatus !== 'uploaded'"
                 class="flex-1 py-4 px-6 rounded-2xl font-bold transition-all duration-200 border-2 flex items-center justify-center gap-2"
                 :class="[
                   uploadStatus === 'uploaded'
