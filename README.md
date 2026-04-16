@@ -43,7 +43,6 @@
     *   负责页面视图组件的展示。
 2.  **Router 层 (`frontend/src/router/`)**:
     *   使用 `vue-router` 管控页面的路由与跳转。
-    *   包含 `/chat` (对话直播间) 和 `/avatar` (形象工作室) 核心路由。
 3.  **Utils & Types 层 (`frontend/src/utils/` & `frontend/src/types/`)**:
     *   `utils` 存放通用的逻辑与请求工具。
     *   `types` 统一管理 TypeScript 类型声明。
