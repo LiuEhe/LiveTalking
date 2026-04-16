@@ -11,6 +11,7 @@
 1.  **API 层 (`backend/api/`)**:
     *   负责定义 FastAPI 路由，通过 `v1_router` 统一提供带有版本前缀的接口（如 `/api/v1`）。
     *   **全局异常捕获**：集成自定义 `Success` APIRoute 机制，自动处理业务异常并返回标准格式 JSON，从而实现 API 函数内部无需手写 `try...except`。
+    *   **模块化设计**：包含 `webrtc_api` (直播)、`avatar_api` (形象生成)、`upload_api` (通用资产上传) 等独立模块。
     *   处理 HTTP/WebSocket 请求及参数验证（使用 Pydantic 模型）。
     *   **不包含**任何业务逻辑，仅作为接口网关。
 
@@ -29,6 +30,12 @@
 4.  **Utils 层 (`backend/utils/`)**:
     *   存放通用的工具类，如日志系统 (`logger.py`)。
 
+## 特色功能：Avatar Studio
+
+本项目引入了全新的形象管理系统，支持“两步走”定制流程：
+1.  **素材上传**：通过通用上传 API 将视频或图像安全存放到 `data/uploads`。
+2.  **异步生成**：前端展示“就绪”状态后由用户手动触发，后端异步完成人脸对齐、裁剪并生成可用资产存放到 `data/avatars`。
+
 ## 前端架构
 前端基于 **Vue 3 (Composition API) + TypeScript + Vite**，并使用最新的 **Tailwind CSS v4** 进行样式构建，核心目录结构如下：
 
@@ -36,6 +43,7 @@
     *   负责页面视图组件的展示。
 2.  **Router 层 (`frontend/src/router/`)**:
     *   使用 `vue-router` 管控页面的路由与跳转。
+    *   包含 `/chat` (对话直播间) 和 `/avatar` (形象工作室) 核心路由。
 3.  **Utils & Types 层 (`frontend/src/utils/` & `frontend/src/types/`)**:
     *   `utils` 存放通用的逻辑与请求工具。
     *   `types` 统一管理 TypeScript 类型声明。
@@ -56,8 +64,10 @@ backend/
 ├── servers/             # 服务层：处理核心业务逻辑与会话状态管理
 ├── core/                # 核心层：包含 AI 推理、音频处理驱动及 Success 处理基类
 ├── utils/                # 工具层：日志管理等
-├── wav2lip/             # 特定模型的代码实现
-├── data/                # 存放头像数据 (avatars)
+├── wav2lip/             # 特定模型的代码实现与本地依赖包 (face_detection)
+├── data/                # 数据存放区
+│   ├── avatars/         # 存放训练完成的头像数据
+│   └── uploads/         # 存放原始上传的音视频素材
 └── models/              # 存放模型权重文件 (.pth)
 ```
 
