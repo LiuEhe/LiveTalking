@@ -37,7 +37,7 @@
 2.  **异步生成**：前端展示“就绪”状态后由用户手动触发，后端异步完成人脸对齐、裁剪并生成可用资产存放到 `data/avatars`。
 
 ## 前端架构
-前端基于 **Vue 3 (Composition API) + TypeScript + Vite**，并使用最新的 **Tailwind CSS v4** 进行样式构建，核心目录结构如下：
+前端基于 **Vue 3 （Composition API） + TypeScript + Vite**，并使用最新的 **Tailwind CSS v4** 进行样式构建，核心目录结构如下：
 
 1.  **Views 层 (`frontend/src/views/`)**:
     *   负责页面视图组件的展示。
