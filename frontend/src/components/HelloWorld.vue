@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// 这是 Vite/Vue 模板自带的示例组件，当前业务流程里基本没有实际使用。
 import { ref } from 'vue'
 import viteLogo from '../assets/vite.svg'
 import heroImg from '../assets/hero.png'
@@ -8,6 +9,7 @@ const count = ref(0)
 </script>
 
 <template>
+  <!-- 这整块主要是脚手架示例 UI，用来展示默认 Vue + Vite 页面结构 -->
   <section id="center">
     <div class="hero">
       <img :src="heroImg" class="base" width="170" height="179" alt="" />

@@ -1,3 +1,9 @@
+"""
+SFD 检测器推理与后处理逻辑。
+
+这里把网络原始输出变成真正可用的人脸框坐标。
+"""
+
 import torch
 import torch.nn.functional as F
 

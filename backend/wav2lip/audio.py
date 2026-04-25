@@ -1,3 +1,10 @@
+"""
+Wav2Lip 音频预处理工具。
+
+这一层主要负责把原始波形转换成 mel 频谱等特征表示。
+你在业务二开时通常不会改这里，除非你想替换口型模型或调整音频特征提取方式。
+"""
+
 import librosa
 import librosa.filters
 import numpy as np
@@ -7,9 +14,11 @@ from scipy.io import wavfile
 from .hparams import hparams as hp
 
 def load_wav(path, sr):
+    """按指定采样率读取 wav。"""
     return librosa.core.load(path, sr=sr)[0]
 
 def save_wav(wav, path, sr):
+    """把浮点波形保存成 16-bit wav 文件。"""
     wav *= 32767 / max(0.01, np.max(np.abs(wav)))
     #proposed by @dsmiller
     wavfile.write(path, sr, wav.astype(np.int16))
@@ -43,6 +52,7 @@ def linearspectrogram(wav):
     return S
 
 def melspectrogram(wav):
+    """把波形转换成 mel 频谱，这是 Wav2Lip 最常用的音频特征。"""
     D = _stft(preemphasis(wav, hp.preemphasis, hp.preemphasize))
     S = _amp_to_db(_linear_to_mel(np.abs(D))) - hp.ref_level_db
     

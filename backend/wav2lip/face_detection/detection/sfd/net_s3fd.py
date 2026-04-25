@@ -1,9 +1,18 @@
+"""
+S3FD 网络结构定义。
+
+这是 SFD 人脸检测器的主体模型结构。
+业务层通常不会直接修改它。
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
 class L2Norm(nn.Module):
+    """对特征图做 L2 归一化，帮助不同层特征尺度更稳定。"""
+
     def __init__(self, n_channels, scale=1.0):
         super(L2Norm, self).__init__()
         self.n_channels = n_channels
@@ -20,6 +29,8 @@ class L2Norm(nn.Module):
 
 
 class s3fd(nn.Module):
+    """S3FD 人脸检测网络主体。"""
+
     def __init__(self):
         super(s3fd, self).__init__()
         self.conv1_1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)

@@ -1,3 +1,10 @@
+"""
+人脸关键点/深度估计相关网络结构定义。
+
+这部分是底层模型代码，主要服务于 `face_detection` 子模块，
+通常只有在替换检测/对齐方案时才需要深入修改。
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -11,6 +18,8 @@ def conv3x3(in_planes, out_planes, strd=1, padding=1, bias=False):
 
 
 class ConvBlock(nn.Module):
+    """一个基础卷积块，供更大网络结构复用。"""
+
     def __init__(self, in_planes, out_planes):
         super(ConvBlock, self).__init__()
         self.bn1 = nn.BatchNorm2d(in_planes)
@@ -56,6 +65,8 @@ class ConvBlock(nn.Module):
 
 
 class Bottleneck(nn.Module):
+    """残差瓶颈模块。"""
+
 
     expansion = 4
 
@@ -96,6 +107,8 @@ class Bottleneck(nn.Module):
 
 
 class HourGlass(nn.Module):
+    """HourGlass 主干模块，用于多尺度特征提取。"""
+
     def __init__(self, num_modules, depth, num_features):
         super(HourGlass, self).__init__()
         self.num_modules = num_modules
@@ -143,6 +156,8 @@ class HourGlass(nn.Module):
 
 
 class FAN(nn.Module):
+    """Face Alignment Network 主体。"""
+
 
     def __init__(self, num_modules=1):
         super(FAN, self).__init__()
@@ -202,6 +217,8 @@ class FAN(nn.Module):
 
 
 class ResNetDepth(nn.Module):
+    """用于深度相关估计的 ResNet 结构。"""
+
 
     def __init__(self, block=Bottleneck, layers=[3, 8, 36, 3], num_classes=68):
         self.inplanes = 64

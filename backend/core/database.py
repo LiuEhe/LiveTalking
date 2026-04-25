@@ -1,15 +1,29 @@
-# Abstract database class
+"""
+数据库抽象占位文件。
+
+当前项目主流程几乎没有真正用到数据库，这个文件更像是为后续扩展预留的接口。
+如果你后面要做快手直播业务，常见会在这里接入：
+- 用户配置表
+- 数字人配置表
+- 直播任务表
+- 会话日志表
+"""
+
+
 class Database:
+    """非常轻量的数据库抽象示例。"""
+
     def __init__(self):
         pass
 
     def connect(self):
-        # Implement DB connection logic
+        """建立数据库连接。当前仅保留扩展点。"""
         pass
 
     def disconnect(self):
-        # Implement DB disconnection logic
+        """关闭数据库连接。当前仅保留扩展点。"""
         pass
 
-# Initialize a global db object or connection pool here
+
+# 这里预留一个全局数据库对象/连接池入口，方便以后改成真正实现。
 db = Database()

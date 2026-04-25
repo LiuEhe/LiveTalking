@@ -1,3 +1,5 @@
+/* 全局样式入口。
+   这份文件保留了较多 Vite 脚手架默认样式，当前业务页面主要还是依赖 Tailwind 类名。 */
 @import "tailwindcss";
 
 :root {

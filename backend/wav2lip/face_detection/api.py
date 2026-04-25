@@ -1,3 +1,10 @@
+"""
+人脸检测对外 API。
+
+项目里的头像生成流程主要通过 `FaceAlignment` 调用人脸检测能力，
+拿到每一帧里的人脸框坐标。
+"""
+
 from __future__ import print_function
 import os
 import torch
@@ -28,6 +35,8 @@ class LandmarksType(Enum):
 
 
 class NetworkSize(Enum):
+    """底层网络规模枚举。当前项目里基本固定使用 LARGE。"""
+
     # TINY = 1
     # SMALL = 2
     # MEDIUM = 3
@@ -44,6 +53,12 @@ class NetworkSize(Enum):
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 class FaceAlignment:
+    """
+    人脸检测封装入口。
+
+    它会按配置加载具体检测器实现，然后对一批图片输出人脸框。
+    """
+
     def __init__(self, landmarks_type, network_size=NetworkSize.LARGE,
                  device='cuda', flip_input=False, face_detector='sfd', verbose=False):
         self.device = device
@@ -62,6 +77,7 @@ class FaceAlignment:
         self.face_detector = face_detector_module.FaceDetector(device=device, verbose=verbose)
 
     def get_detections_for_batch(self, images):
+        """对一批图像做人脸检测，返回 `(x1, y1, x2, y2)` 坐标。"""
         images = images[..., ::-1]
         detected_faces = self.face_detector.detect_from_batch(images.copy())
         results = []

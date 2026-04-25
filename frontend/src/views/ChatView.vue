@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount } from 'vue'
 
+// 当前聊天面板里的消息列表。
+// 这里既包含用户消息，也包含系统提示和机器人流式回复。
 const messages = ref([
   { id: 1, type: 'system', text: '欢迎使用livetalking，请点击"开始连接"按钮开始对话。' }
 ])
+// 页面级状态：输入框内容、连接状态、录制状态、会话 id。
 const inputMessage = ref('')
 const connectionStatus = ref('disconnected') // disconnected, connecting, connected
 const isRecording = ref(false)
@@ -11,6 +14,8 @@ const sessionId = ref(0)
 let pc: RTCPeerConnection | null = null
 
 const negotiate = async () => {
+  // 这一步是 WebRTC 协商的核心：
+  // 前端先生成 offer，再发给后端，后端返回 answer。
   if (!pc) return
 
   pc.addTransceiver('video', { direction: 'recvonly' })
@@ -62,6 +67,7 @@ const negotiate = async () => {
 }
 
 const startConnection = () => {
+  // 真正开始连接时才创建 PeerConnection，避免页面一加载就占资源。
   connectionStatus.value = 'connecting'
   const config: RTCConfiguration = {
     sdpSemantics: 'unified-plan'
@@ -70,6 +76,8 @@ const startConnection = () => {
   pc = new RTCPeerConnection(config)
 
   pc.addEventListener('track', (evt) => {
+    // 后端会回两条轨道：一条视频、一条音频。
+    // 浏览器拿到后直接绑定到页面上的 <video>/<audio> 元素。
     if (evt.track.kind === 'video') {
       const videoEl = document.getElementById('video') as HTMLVideoElement
       if (videoEl) videoEl.srcObject = evt.streams[0]
@@ -90,6 +98,7 @@ const startConnection = () => {
 }
 
 const stopConnection = () => {
+  // 主动断开连接时，记得把本地 pc 实例也清掉。
   connectionStatus.value = 'disconnected'
   if (pc) {
     pc.close()
@@ -103,6 +112,10 @@ onBeforeUnmount(() => {
 })
 
 const sendMessage = async () => {
+  // 发送消息的完整流程：
+  // 1. 先把用户消息追加到本地聊天列表
+  // 2. 请求后端 `/human`
+  // 3. 流式接收机器人文本并持续更新最后一条消息
   if (!inputMessage.value.trim()) return
   
   const text = inputMessage.value
@@ -162,6 +175,7 @@ const sendMessage = async () => {
 }
 
 const toggleRecording = async () => {
+  // 录制控制本质上只是调后端 `/record` 接口切换状态。
   if (isRecording.value) {
     // Stop recording
     try {

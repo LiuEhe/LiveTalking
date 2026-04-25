@@ -1,3 +1,9 @@
+"""
+SFD 人脸检测器封装。
+
+这个类会加载预训练权重，并实现真正的 `detect_from_image/batch` 逻辑。
+"""
+
 import os
 import cv2
 from torch.utils.model_zoo import load_url
@@ -14,6 +20,8 @@ models_urls = {
 
 
 class SFDDetector(FaceDetector):
+    """基于 S3FD 网络的人脸检测器。"""
+
     def __init__(self, device, path_to_detector=os.path.join(os.path.dirname(os.path.abspath(__file__)), 's3fd.pth'), verbose=False):
         super(SFDDetector, self).__init__(device, verbose)
 

@@ -1,3 +1,10 @@
+"""
+边界框相关数学工具。
+
+这一层负责边界框编码、解码、NMS 等操作，
+是底层检测器输出后处理的一部分。
+"""
+
 from __future__ import print_function
 import os
 import sys

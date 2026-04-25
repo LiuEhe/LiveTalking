@@ -1,3 +1,13 @@
+"""
+人脸检测辅助工具函数。
+
+这里收集的是一些通用数学/图像处理操作，例如：
+- 生成高斯热力图
+- 坐标变换
+- 图像裁剪
+- 左右翻转关键点
+"""
+
 from __future__ import print_function
 import os
 import sys

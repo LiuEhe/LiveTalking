@@ -1,3 +1,10 @@
+"""
+旧版头像素材生成脚本。
+
+它和 `servers/avatar_server.py` 做的事情非常像，只是更偏命令行脚本用法。
+如果你想理解头像素材最原始的生成过程，这个文件很有参考价值。
+"""
+
 from os import listdir, path
 import numpy as np
 import scipy, cv2, os, sys, argparse
@@ -25,10 +32,12 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print('Using {} for inference.'.format(device))
 
 def osmakedirs(path_list):
+    """批量创建目录。"""
     for path in path_list:
         os.makedirs(path) if not os.path.exists(path) else None
 
 def video2imgs(vid_path, save_path, ext = '.png',cut_frame = 10000000):
+    """把输入视频拆成连续帧图片。"""
     cap = cv2.VideoCapture(vid_path)
     count = 0
     while True:
@@ -43,6 +52,7 @@ def video2imgs(vid_path, save_path, ext = '.png',cut_frame = 10000000):
             break
 
 def read_imgs(img_list):
+    """把拆出来的图片全部读入内存。"""
     frames = []
     print('reading images...')
     for img_path in tqdm(img_list):
@@ -51,6 +61,7 @@ def read_imgs(img_list):
     return frames
 
 def get_smoothened_boxes(boxes, T):
+	"""对相邻帧的人脸框做平滑，减少抖动。"""
 	for i in range(len(boxes)):
 		if i + T > len(boxes):
 			window = boxes[len(boxes) - T:]
@@ -60,6 +71,7 @@ def get_smoothened_boxes(boxes, T):
 	return boxes
 
 def face_detect(images):
+	"""批量做人脸检测，并返回裁剪结果和原图坐标。"""
 	detector = face_detection.FaceAlignment(face_detection.LandmarksType._2D, 
 											flip_input=False, device=device)
 
@@ -100,6 +112,7 @@ def face_detect(images):
 	return results 
 
 if __name__ == "__main__":
+    # 这一段脚本逻辑完整演示了“视频拆帧 -> 人脸检测 -> 人脸裁剪 -> 坐标保存”的流程。
     avatar_path = f"./results/avatars/{args.avatar_id}"
     full_imgs_path = f"{avatar_path}/full_imgs" 
     face_imgs_path = f"{avatar_path}/face_imgs" 

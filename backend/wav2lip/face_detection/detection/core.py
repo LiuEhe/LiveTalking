@@ -1,3 +1,10 @@
+"""
+人脸检测抽象基类。
+
+不同检测器（例如 SFD）都会继承这里的 `FaceDetector`，
+对外暴露统一接口，方便上层 `FaceAlignment` 调用。
+"""
+
 import logging
 import glob
 from tqdm import tqdm
@@ -16,6 +23,7 @@ class FaceDetector(object):
     """
 
     def __init__(self, device, verbose):
+        """保存设备信息，并做最基础的参数校验。"""
         self.device = device
         self.verbose = verbose
 

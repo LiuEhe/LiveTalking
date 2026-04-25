@@ -1,3 +1,14 @@
+"""
+旧版后端启动入口。
+
+和 `main.py` 的 FastAPI 版本相比，这个文件更接近项目早期的原始运行方式：
+- 自己手动创建 aiohttp / aiortc 服务
+- 手动注册路由
+- 手动启动事件循环和线程
+
+它现在更像一份“历史实现参考”，非常适合用来理解项目最底层是怎么拼起来的。
+"""
+
 from flask import Flask, render_template,send_from_directory,request, jsonify
 from flask_sockets import Sockets
 import base64
@@ -48,6 +59,7 @@ def randN(N)->int:
     return random.randint(min, max - 1)
 
 def build_nerfreal(sessionid:int)->BaseReal:
+    """按会话 id 创建一个数字人实例。"""
     opt.sessionid=sessionid
     from lipreal import LipReal
     nerfreal = LipReal(opt,model,avatar)
@@ -55,6 +67,7 @@ def build_nerfreal(sessionid:int)->BaseReal:
 
 #@app.route('/offer', methods=['POST'])
 async def offer(request):
+    """处理 WebRTC offer，并为当前连接创建一个新的数字人会话。"""
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
 
@@ -114,6 +127,7 @@ async def offer(request):
     )
 
 async def human(request):
+    """处理文本互动：可直接复读，也可调用 LLM 再播报。"""
     try:
         params = await request.json()
 
@@ -143,6 +157,7 @@ async def human(request):
         )
 
 async def interrupt_talk(request):
+    """中断当前会话讲话。"""
     try:
         params = await request.json()
 
@@ -165,6 +180,7 @@ async def interrupt_talk(request):
         )
 
 async def humanaudio(request):
+    """接收一段音频文件并送进当前数字人的音频输入链路。"""
     try:
         form= await request.post()
         sessionid = int(form.get('sessionid',0))
@@ -189,6 +205,7 @@ async def humanaudio(request):
         )
 
 async def set_audiotype(request):
+    """切换当前会话的自定义动作/音频状态。"""
     try:
         params = await request.json()
 
@@ -211,6 +228,7 @@ async def set_audiotype(request):
         )
 
 async def record(request):
+    """控制当前会话开始或结束录制。"""
     try:
         params = await request.json()
 
@@ -236,6 +254,7 @@ async def record(request):
         )
 
 async def is_speaking(request):
+    """查询当前会话是否正在说话。"""
     params = await request.json()
 
     sessionid = params.get('sessionid',0)
@@ -248,12 +267,14 @@ async def is_speaking(request):
 
 
 async def on_shutdown(app):
+    """关闭服务时统一断开所有 PeerConnection。"""
     # close peer connections
     coros = [pc.close() for pc in pcs]
     await asyncio.gather(*coros)
     pcs.clear()
 
 async def post(url,data):
+    """向外部推流服务发送 HTTP POST 请求。"""
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(url,data=data) as response:
@@ -262,6 +283,7 @@ async def post(url,data):
         logger.info(f'Error: {e}')
 
 async def run(push_url,sessionid):
+    """rtcpush 模式下，主动向外部地址发起 WebRTC 推流。"""
     nerfreal = await asyncio.get_event_loop().run_in_executor(None, build_nerfreal,sessionid)
     nerfreals[sessionid] = nerfreal
 
@@ -286,6 +308,7 @@ async def run(push_url,sessionid):
 # os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
 # os.environ['MULTIPROCESSING_METHOD'] = 'forkserver'                                                    
 if __name__ == '__main__':
+    # 这一大段参数解析，定义了项目最原始的命令行启动方式。
     mp.set_start_method('spawn')
     parser = argparse.ArgumentParser()
     

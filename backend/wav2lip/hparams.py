@@ -1,7 +1,15 @@
+"""
+Wav2Lip 超参数定义。
+
+这个文件集中管理音频处理和训练/推理所需的默认参数。
+如果只是做业务二开，一般只需要了解这些参数的含义，不建议随意改。
+"""
+
 from glob import glob
 import os
 
 def get_image_list(data_root, split):
+	"""根据数据划分文件，返回图片路径列表。"""
 	filelist = []
 
 	with open('filelists/{}.txt'.format(split)) as f:
@@ -13,6 +21,8 @@ def get_image_list(data_root, split):
 	return filelist
 
 class HParams:
+	"""一个简易的超参数容器，支持用点号访问配置项。"""
+
 	def __init__(self, **kwargs):
 		self.data = {}
 
@@ -96,6 +106,7 @@ hparams = HParams(
 
 
 def hparams_debug_string():
+	"""把当前超参数整理成便于打印的调试字符串。"""
 	values = hparams.values()
 	hp = ["  %s: %s" % (name, values[name]) for name in sorted(values) if name != "sentences"]
 	return "Hyperparameters:\n" + "\n".join(hp)

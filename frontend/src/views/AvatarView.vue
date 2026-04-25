@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+// 这个页面的状态主要围绕“上传素材”和“触发生成”两步展开。
 const avatarId = ref('')
 const selectedFile = ref<File | null>(null)
 const uploadStatus = ref<'idle' | 'uploading' | 'uploaded' | 'generating' | 'success' | 'error'>('idle')
@@ -9,6 +10,7 @@ const errorMessage = ref('')
 const successMessage = ref('')
 
 const onFileChange = (e: Event) => {
+  // 统一处理点击选择和拖拽上传两种入口。
   const target = e.target as HTMLInputElement
   if (target.files && target.files[0]) {
     selectedFile.value = target.files[0]
@@ -17,6 +19,7 @@ const onFileChange = (e: Event) => {
 }
 
 const handleUpload = async () => {
+  // 第一步：把原始素材先传到后端 `data/uploads/` 目录。
   if (!selectedFile.value || !avatarId.value) {
     errorMessage.value = '请输入形象ID并选择文件'
     return
@@ -49,6 +52,7 @@ const handleUpload = async () => {
 }
 
 const handleGenerate = async () => {
+  // 第二步：通知后端基于刚上传的素材生成 avatar 数据。
   if (!avatarId.value || !backendFilename.value) return
 
   uploadStatus.value = 'generating'

@@ -1,3 +1,5 @@
+// 前端路由表。
+// 如果后面你要新增“快手配置页”“直播任务页”等页面，通常就是从这里加路由。
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ChatView from '../views/ChatView.vue'

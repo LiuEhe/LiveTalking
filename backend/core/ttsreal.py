@@ -14,6 +14,21 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ###############################################################################
+
+"""
+TTS 适配层。
+
+这个文件的作用可以概括成一句话：
+“把一段文本，通过不同语音服务，变成统一格式的 16kHz 音频帧，再送进数字人口型链路。”
+
+为什么这里会这么长？
+- 因为项目支持很多 TTS 后端
+- 但最终都要归一到同一套内部接口
+
+所以阅读时可以抓住一个核心：
+无论底下接的是 EdgeTTS、GPT-SoVITS、腾讯云还是 Azure，
+最终都要把音频拆成固定大小的 chunk，调用 `self.parent.put_audio_frame(...)`。
+"""
 from __future__ import annotations
 import time
 import numpy as np
@@ -51,10 +66,20 @@ from utils.logger import logger
 from gradio_client import Client, handle_file
 
 class State(Enum):
+    """TTS 工作状态：运行中或暂停。"""
+
     RUNNING=0
     PAUSE=1
 
 class BaseTTS:
+    """
+    所有 TTS 实现的共同基类。
+
+    子类通常只需要关注两件事：
+    1. 如何把文本发给具体服务商
+    2. 如何把返回的音频流转成统一 chunk 大小
+    """
+
     def __init__(self, opt, parent:BaseReal):
         self.opt=opt
         self.parent = parent
@@ -68,18 +93,22 @@ class BaseTTS:
         self.state = State.RUNNING
 
     def flush_talk(self):
+        """清空待播报文本，并切到暂停状态。"""
         self.msgqueue.queue.clear()
         self.state = State.PAUSE
 
     def put_msg_txt(self,msg:str,datainfo:dict={}): 
+        """把一段待播报文本压入队列。"""
         if len(msg)>0:
             self.msgqueue.put((msg,datainfo))
 
     def render(self,quit_event):
+        """启动后台线程，持续消费文本队列。"""
         process_thread = Thread(target=self.process_tts, args=(quit_event,))
         process_thread.start()
     
     def process_tts(self,quit_event):        
+        """后台循环：不断从文本队列取消息并执行语音合成。"""
         while not quit_event.is_set():
             try:
                 msg:tuple[str, dict] = self.msgqueue.get(block=True, timeout=1)
@@ -90,11 +119,14 @@ class BaseTTS:
         logger.info('ttsreal thread stop')
     
     def txt_to_audio(self,msg:tuple[str, dict]):
+        """子类实现：把文本转成音频流，并继续送入父对象。"""
         pass
     
 
 ###########################################################################################
 class EdgeTTS(BaseTTS):
+    """微软 Edge TTS 适配器，适合快速本地调试。"""
+
     def txt_to_audio(self,msg:tuple[str, dict]):
         voicename = self.opt.REF_FILE #"zh-CN-YunxiaNeural"
         text,textevent = msg
@@ -161,6 +193,8 @@ class EdgeTTS(BaseTTS):
 
 ###########################################################################################
 class FishTTS(BaseTTS):
+    """Fish Speech / FishTTS 适配器。"""
+
     def txt_to_audio(self,msg:tuple[str, dict]): 
         text,textevent = msg
         self.stream_tts(
@@ -239,6 +273,8 @@ class FishTTS(BaseTTS):
 
 ###########################################################################################
 class SovitsTTS(BaseTTS):
+    """GPT-SoVITS 适配器。"""
+
     def txt_to_audio(self,msg:tuple[str, dict]): 
         text,textevent = msg
         self.stream_tts(
@@ -338,6 +374,8 @@ class SovitsTTS(BaseTTS):
 
 ###########################################################################################
 class CosyVoiceTTS(BaseTTS):
+    """CosyVoice 适配器。"""
+
     def txt_to_audio(self,msg:tuple[str, dict]):
         text,textevent = msg 
         self.stream_tts(
@@ -411,6 +449,8 @@ _PATH = "/stream"
 _ACTION = "TextToStreamAudio"
 
 class TencentTTS(BaseTTS):
+    """腾讯云流式语音合成适配器。"""
+
     def __init__(self, opt, parent):
         super().__init__(opt,parent)
         self.appid = os.getenv("TENCENT_APPID")
@@ -534,6 +574,8 @@ class TencentTTS(BaseTTS):
 
 
 class DoubaoTTS(BaseTTS):
+    """火山引擎 / 豆包流式 TTS 适配器。"""
+
     def __init__(self, opt, parent):
         super().__init__(opt, parent)
         # 从配置中读取火山引擎参数
@@ -664,6 +706,13 @@ class DoubaoTTS(BaseTTS):
 
 ###########################################################################################
 class IndexTTS2(BaseTTS):
+    """
+    IndexTTS2 适配器。
+
+    它和其他实现最大的不同是会先把长文本切段，再逐段调用生成接口，
+    这样比较适合较长句子的稳定播报。
+    """
+
     def __init__(self, opt, parent):
         super().__init__(opt, parent)
         # IndexTTS2 配置参数
@@ -854,6 +903,8 @@ class IndexTTS2(BaseTTS):
 
 ###########################################################################################
 class XTTS(BaseTTS):
+    """XTTS 适配器，支持参考音色克隆。"""
+
     def __init__(self, opt, parent):
         super().__init__(opt,parent)
         self.speaker = self.get_speaker(opt.REF_FILE, opt.TTS_SERVER)
@@ -935,6 +986,8 @@ class XTTS(BaseTTS):
 
 ###########################################################################################
 class AzureTTS(BaseTTS):
+    """Azure Speech TTS 适配器。"""
+
     CHUNK_SIZE = 640  # 16kHz, 20ms, 16-bit Mono PCM size
     def __init__(self, opt, parent):
         super().__init__(opt,parent)
