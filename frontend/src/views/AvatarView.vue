@@ -1,85 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-
-const avatarId = ref('')
-const selectedFile = ref<File | null>(null)
-const uploadStatus = ref<'idle' | 'uploading' | 'uploaded' | 'generating' | 'success' | 'error'>('idle')
-const backendFilename = ref('')
-const errorMessage = ref('')
-const successMessage = ref('')
-
-const onFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedFile.value = target.files[0]
-    uploadStatus.value = 'idle'
-  }
-}
-
-const handleUpload = async () => {
-  if (!selectedFile.value || !avatarId.value) {
-    errorMessage.value = '请输入形象ID并选择文件'
-    return
-  }
-
-  uploadStatus.value = 'uploading'
-  errorMessage.value = ''
-  
-  const formData = new FormData()
-  formData.append('file', selectedFile.value)
-
-  try {
-    const res = await fetch('/api/v1/upload', {
-      method: 'POST',
-      body: formData
-    })
-    const data = await res.json()
-    
-    if (data.code === 0) {
-      backendFilename.value = data.data.filename
-      uploadStatus.value = 'uploaded'
-      successMessage.value = '文件上传成功，准备开始处理'
-    } else {
-      throw new Error(data.msg || '上传失败')
-    }
-  } catch (err: any) {
-    uploadStatus.value = 'error'
-    errorMessage.value = err.message
-  }
-}
-
-const handleGenerate = async () => {
-  if (!avatarId.value || !backendFilename.value) return
-
-  uploadStatus.value = 'generating'
-  errorMessage.value = ''
-
-  try {
-    const res = await fetch('/api/v1/avatar/gen', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        avatar_id: avatarId.value,
-        filename: backendFilename.value
-      })
-    })
-    const data = await res.json()
-
-    if (data.code === 0) {
-      uploadStatus.value = 'success'
-      successMessage.value = '训练任务已启动！请在后端数据目录查看结果。'
-    } else {
-      throw new Error(data.msg || '生成失败')
-    }
-  } catch (err: any) {
-    uploadStatus.value = 'error'
-    errorMessage.value = err.message
-  }
-}
-</script>
-
 <template>
   <div class="min-h-screen bg-[#FDFDFF] p-6 lg:p-12 font-sans selection:bg-indigo-100 selection:text-indigo-900">
     <div class="max-w-4xl mx-auto">
@@ -253,6 +171,88 @@ const handleGenerate = async () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const avatarId = ref('')
+const selectedFile = ref<File | null>(null)
+const uploadStatus = ref<'idle' | 'uploading' | 'uploaded' | 'generating' | 'success' | 'error'>('idle')
+const backendFilename = ref('')
+const errorMessage = ref('')
+const successMessage = ref('')
+
+const onFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    selectedFile.value = target.files[0]
+    uploadStatus.value = 'idle'
+  }
+}
+
+const handleUpload = async () => {
+  if (!selectedFile.value || !avatarId.value) {
+    errorMessage.value = '请输入形象ID并选择文件'
+    return
+  }
+
+  uploadStatus.value = 'uploading'
+  errorMessage.value = ''
+  
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+
+  try {
+    const res = await fetch('/api/v1/upload', {
+      method: 'POST',
+      body: formData
+    })
+    const data = await res.json()
+    
+    if (data.code === 0) {
+      backendFilename.value = data.data.filename
+      uploadStatus.value = 'uploaded'
+      successMessage.value = '文件上传成功，准备开始处理'
+    } else {
+      throw new Error(data.msg || '上传失败')
+    }
+  } catch (err: any) {
+    uploadStatus.value = 'error'
+    errorMessage.value = err.message
+  }
+}
+
+const handleGenerate = async () => {
+  if (!avatarId.value || !backendFilename.value) return
+
+  uploadStatus.value = 'generating'
+  errorMessage.value = ''
+
+  try {
+    const res = await fetch('/api/v1/avatar/gen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        avatar_id: avatarId.value,
+        filename: backendFilename.value
+      })
+    })
+    const data = await res.json()
+
+    if (data.code === 0) {
+      uploadStatus.value = 'success'
+      successMessage.value = '训练任务已启动！请在后端数据目录查看结果。'
+    } else {
+      throw new Error(data.msg || '生成失败')
+    }
+  } catch (err: any) {
+    uploadStatus.value = 'error'
+    errorMessage.value = err.message
+  }
+}
+</script>
 
 <style scoped>
 /* Glassmorphism effects or extra animations if needed */

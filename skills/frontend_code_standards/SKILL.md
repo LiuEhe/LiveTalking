@@ -13,7 +13,7 @@ description: LiveTalking 前端项目的严格代码规范，涵盖 Vue 3、Type
 
 ## 2. 组件结构 (Component Structure)
 - **目录约定**：基础组件应该放置在 `src/components/`，而页面级的视图组件应放置在 `src/views/`。
-- **单文件组件 (SFCs)**：模版、脚本和样式需保持在同一个 `.vue` 文件中。
+- **单文件组件 (SFCs)**：模版、脚本和样式需保持在同一个 `.vue` 文件中。**结构顺序必须为：`<template>` -> `<script>` -> `<style>`。**
 - **命名规范**：组件文件**必须**使用大驼峰命名法（PascalCase），例如 `UserProfile.vue`。
 
 ## 3. Tailwind CSS 样式规范 (Styling with Tailwind CSS)
