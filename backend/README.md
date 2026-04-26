@@ -1,4 +1,4 @@
- # [English](./README-EN.md) | 中文版  
+# English | [中文版](./README.md)  
  <p align="center">
  <img src="./assets/LiveTalking-logo.jpg" align="middle" width = "300"/>
 <p align="center">
