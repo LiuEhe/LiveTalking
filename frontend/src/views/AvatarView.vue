@@ -52,12 +52,8 @@
                   ]"
                 >
                   <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300">
-                    <svg v-if="!selectedFile" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                    </svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                    <CloudUpload v-if="!selectedFile" class="h-8 w-8 text-indigo-500" />
+                    <Check v-else class="h-8 w-8 text-green-500" />
                   </div>
                   
                   <p class="text-sm font-bold text-gray-900 mb-1">
@@ -82,10 +78,7 @@
                     : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
                 ]"
               >
-                <svg v-if="uploadStatus === 'uploading'" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <Loader2 v-if="uploadStatus === 'uploading'" class="animate-spin h-5 w-5 text-white" />
                 <span v-if="uploadStatus === 'uploading'">正在上传...</span>
                 <span v-else-if="['uploaded', 'generating', 'success'].includes(uploadStatus)">上传成功</span>
                 <span v-else>立即上传素材</span>
@@ -101,10 +94,7 @@
                     : 'border-gray-200 text-gray-400 cursor-not-allowed'
                 ]"
               >
-                 <svg v-if="uploadStatus === 'generating'" class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                 <Loader2 v-if="uploadStatus === 'generating'" class="animate-spin h-5 w-5 text-indigo-600" />
                 <span v-if="uploadStatus === 'generating'">正在训练中...</span>
                 <span v-else>点击开始生成</span>
               </button>
@@ -113,18 +103,14 @@
             <!-- Feedback Messages -->
             <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
               <div v-if="errorMessage" class="mt-6 p-4 rounded-2xl bg-red-50 border border-red-100 flex items-center gap-3 text-red-600 text-sm font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
+                <AlertCircle class="h-5 w-5" />
                 {{ errorMessage }}
               </div>
             </Transition>
             
             <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
               <div v-if="successMessage" class="mt-6 p-4 rounded-2xl bg-green-50 border border-green-100 flex items-center gap-3 text-green-700 text-sm font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
+                <CheckCircle2 class="h-5 w-5" />
                 {{ successMessage }}
               </div>
             </Transition>
@@ -135,9 +121,7 @@
         <div class="space-y-6">
           <div class="bg-indigo-900 rounded-3xl p-6 text-white shadow-xl shadow-indigo-200/50">
             <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-300" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 00-1 1v-4a1 1 0 102 0v4a1 1 0 00-1 1z" clip-rule="evenodd" />
-              </svg>
+              <Info class="h-5 w-5 text-indigo-300" />
               上传指南
             </h3>
             <ul class="space-y-4 text-sm text-indigo-100/80 leading-relaxed">
@@ -160,9 +144,7 @@
                 <p class="text-gray-500 text-xs text-nowrap">前往数字人直播间</p>
               </div>
               <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:translate-x-1 transition-transform">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
+                <ArrowRight class="h-5 w-5 text-gray-700" />
               </div>
             </div>
           </router-link>
@@ -174,6 +156,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { 
+  CloudUpload, 
+  Check, 
+  AlertCircle, 
+  Info, 
+  ArrowRight, 
+  Loader2, 
+  CheckCircle2 
+} from 'lucide-vue-next'
 
 const avatarId = ref('')
 const selectedFile = ref<File | null>(null)

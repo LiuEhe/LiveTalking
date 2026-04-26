@@ -32,19 +32,14 @@
           <!-- Disconnected Placeholder -->
           <div v-if="connectionStatus === 'disconnected'" class="absolute gap-4 flex flex-col items-center justify-center text-gray-500 transition-opacity duration-300">
             <div class="w-20 h-20 rounded-full bg-gray-800/50 flex items-center justify-center mb-2 shadow-inner border border-gray-700/50">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+              <Video class="h-8 w-8 text-gray-600" />
             </div>
             <p class="text-sm font-medium tracking-wide">等待数字人推流接入</p>
           </div>
           
           <!-- Connecting state -->
           <div v-else-if="connectionStatus === 'connecting'" class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 transition-opacity duration-300">
-            <svg class="animate-spin h-10 w-10 text-white mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <Loader2 class="animate-spin h-10 w-10 text-white mb-4" />
             <span class="text-white text-sm font-medium tracking-widest uppercase">Connecting stream...</span>
           </div>
           
@@ -62,9 +57,7 @@
             @click="startConnection"
             class="w-full py-3 bg-gray-900 hover:bg-black text-white rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 transform active:scale-[0.98]"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-            </svg>
+            <Play class="h-5 w-5" />
             开始接收视频流
           </button>
           
@@ -73,9 +66,7 @@
             @click="stopConnection"
             class="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
-            </svg>
+            <Square class="h-5 w-5" />
             断开连接
           </button>
           
@@ -101,9 +92,7 @@
         <!-- Empty state -->
         <div v-if="messages.length === 0" class="h-[80%] flex flex-col items-center justify-center text-gray-400 space-y-6 animate-in fade-in duration-700">
           <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center text-gray-300 ring-1 ring-gray-100 shadow-sm rotate-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 -rotate-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
+            <MessageSquare class="h-10 w-10 -rotate-3" />
           </div>
           <div class="text-center space-y-1">
             <h3 class="text-gray-800 font-medium text-lg">准备好开始对话了</h3>
@@ -130,9 +119,7 @@
           >
             <!-- Avatar for bot (optional) -->
             <div v-if="msg.type === 'bot'" class="absolute -left-10 top-1 w-7 h-7 bg-black rounded-full flex items-center justify-center shadow-sm">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                </svg>
+               <Bot class="h-4 w-4 text-white" />
             </div>
             
             <span class="whitespace-pre-wrap">{{ msg.text }}</span>
@@ -153,9 +140,7 @@
             :class="{'text-black bg-gray-50': isRecording}"
             title="语音输入"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-            </svg>
+            <Mic class="h-[22px] w-[22px]" />
           </button>
           
           <!-- Textarea -->
@@ -176,9 +161,7 @@
               class="w-10 h-10 rounded-full transition-all duration-300 focus:outline-none flex items-center justify-center transform disabled:opacity-30 disabled:cursor-not-allowed"
               :class="inputMessage.trim() ? 'bg-black text-white hover:scale-105 active:scale-95 shadow-md' : 'bg-gray-100 text-gray-400'"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m0 0l-7 7m7-7l7 7" />
-              </svg>
+              <Send class="h-5 w-5 ml-0.5" />
             </button>
           </div>
         </div>
@@ -196,6 +179,16 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount } from 'vue'
+import { 
+  Video, 
+  Mic, 
+  Play, 
+  Square, 
+  MessageSquare, 
+  Send, 
+  Bot, 
+  Loader2 
+} from 'lucide-vue-next'
 
 const messages = ref([
   { id: 1, type: 'system', text: '欢迎使用livetalking，请点击"开始连接"按钮开始对话。' }
