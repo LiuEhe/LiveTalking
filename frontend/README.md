@@ -14,19 +14,21 @@
 ## 快速上手
 
 ### 1. 环境准备
-确保您的本地已经安装了较高版本的 Node.js（推荐 `Node.js 18+`）。通过 `node -v` 检查版本。
+确保您的本地已经安装了较高版本的 Node.js（推荐 `Node.js 18+`）以及 `pnpm`（推荐 `pnpm 8+`）。
+* 检查 Node 版本：`node -v`
+* 检查 pnpm 版本：`pnpm -v`（未安装请运行 `npm install -g pnpm`）
 
 ### 2. 安装项目依赖
-进入前端目录，并使用 npm 安装所有的依赖资源：
+进入前端目录，并使用 pnpm 安装所有的依赖资源：
 ```bash
 cd frontend
-npm install
+pnpm install
 ```
 
 ### 3. 本地开发服务器
 运行 Vite 提供的本地开发命令：
 ```bash
-npm run dev
+pnpm dev
 ```
 此时 Vite 会自动启动开发服务器（由于 Vite 配置了 `open: true`，此时会在浏览器中自动打开该项目地址，例如 `http://127.0.0.1:5173/`）。页面的更改可以秒级热更新 (HMR)。
 
