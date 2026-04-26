@@ -189,6 +189,7 @@ import {
   Bot, 
   Loader2 
 } from 'lucide-vue-next'
+import { postOffer } from '@/api/webrtc'
 
 const messages = ref([
   { id: 1, type: 'system', text: '欢迎使用livetalking，请点击"开始连接"按钮开始对话。' }
@@ -227,26 +228,23 @@ const negotiate = async () => {
   if (!localOffer) return
 
   try {
-    const res = await fetch('/api/v1/offer', {
-      body: JSON.stringify({
-        sdp: localOffer.sdp,
-        type: localOffer.type,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'POST'
+    const answer = await postOffer({
+      sdp: localOffer.sdp,
+      type: localOffer.type,
     })
-    
-    const answer = await res.json()
     sessionId.value = answer.sessionid
-    await pc.setRemoteDescription(answer)
+    await pc.setRemoteDescription({ sdp: answer.sdp, type: answer.type as RTCSdpType })
     connectionStatus.value = 'connected'
-    console.log("WebRTC Connected. Session ID:", sessionId.value)
-  } catch (e) {
-    console.error('WebRTC negotiate error:', e)
+    console.log('WebRTC Connected. Session ID:', sessionId.value)
+  } catch (e: unknown) {
+    const errMsg = e instanceof Error ? e.message : String(e)
+    console.error('WebRTC negotiate error:', errMsg)
     connectionStatus.value = 'disconnected'
-    alert('连接失败：' + e)
+    messages.value.push({
+      id: Date.now(),
+      type: 'system',
+      text: `⚠️ 连接失败：${errMsg}`,
+    })
   }
 }
 

@@ -16,6 +16,7 @@ import face_detection
 import torch
 import asyncio
 from utils.logger import logger
+from servers import state
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -126,6 +127,11 @@ def sync_generate_avatar(avatar_id: str, video_path: str, img_size: int = 256):
             pickle.dump(coord_list, f)
             
         logger.info(f"Successfully generated avatar {avatar_id}")
+        # Invalidate the cached avatar so it is reloaded on the next WebRTC
+        # connection, picking up the freshly generated data.
+        state.avatar = None
+        if state.opt is not None:
+            state.opt.avatar_id = avatar_id
         return {"code": 0, "msg": "Avatar generated successfully"}
     except Exception as e:
         logger.error(f"Failed to generate avatar: {str(e)}")

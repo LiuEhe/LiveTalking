@@ -6,6 +6,7 @@ from aiortc.rtcrtpsender import RTCRtpSender
 from core.webrtc import HumanPlayer
 from utils.logger import logger
 from core.lipreal import LipReal
+from core import load_avatar
 from servers import state
 
 def randN(N) -> int:
@@ -15,6 +16,11 @@ def randN(N) -> int:
 
 def build_nerfreal(sessionid: int):
     state.opt.sessionid = sessionid
+    # Lazy-load avatar on first connection: allows server to start without
+    # a pre-existing avatar directory, and reloads if avatar was just created.
+    if state.avatar is None:
+        logger.info("Avatar not loaded yet – loading avatar '%s' now.", state.opt.avatar_id)
+        state.avatar = load_avatar(state.opt.avatar_id)
     nerfreal = LipReal(state.opt, state.model, state.avatar)
     return nerfreal
 

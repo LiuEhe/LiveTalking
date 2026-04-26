@@ -52,7 +52,9 @@ async def lifespan(app: FastAPI):
     # Push opt to state for build_nerfreal
     state.opt = settings
     state.model = load_model(settings.model_path)
-    state.avatar = load_avatar(settings.avatar_id)
+    # Avatar is loaded lazily on first WebRTC connection to allow the server
+    # to start even when no avatar has been created yet.
+    state.avatar = None
     warm_up(settings.batch_size, state.model, settings.warmup_res)
     
     yield
